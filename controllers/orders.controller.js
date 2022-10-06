@@ -1,4 +1,3 @@
-
 // Models
 const { Cart } = require('../models/cart.model');
 const { Product } = require('../models/product.model');
@@ -7,7 +6,6 @@ const { ProductInCart } = require('../models/productInCart.model');
 // Utils
 const { catchAsync } = require('../utils/catchAsync.util');
 const { AppError } = require('../utils/appError.util');
-
 
 const addProductToCart = catchAsync(async (req, res, next) => {
   const { sessionUser } = req;
@@ -107,15 +105,21 @@ const updateProductInCart = catchAsync(async (req, res, next) => {
 
 const purchaseCart = catchAsync(async (req, res, next) => {});
 
-const removeProductFromCart = catchAsync(async (req, res, next) => {});
+const removeProductFromCart = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const removeproduct = await ProductInCart.findOne({
+   
+    where: { productId: id, status: 'active' },
+  });
+
+  await removeproduct.update({ status: 'removed' });
+
+});
 
 module.exports = {
   addProductToCart,
   updateProductInCart,
   purchaseCart,
   removeProductFromCart,
-
 };
-
-
-

@@ -169,6 +169,5 @@ module.exports = {
   login,
   getUserProducts,
   getAllOrders,
-
   getOrderById,
 };
