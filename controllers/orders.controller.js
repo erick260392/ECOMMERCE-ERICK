@@ -103,18 +103,36 @@ const updateProductInCart = catchAsync(async (req, res, next) => {
   });
 });
 
-const purchaseCart = catchAsync(async (req, res, next) => {});
+const purchaseCart = catchAsync(async (req, res, next) => {
+  const { sessionUser } = req;
 
-const removeProductFromCart = catchAsync(async (req, res, next) => {
+  const id = sessionUser.id;
+
+  const purchase = await Cart.findOne({
+    where: { userid: id, status: 'active' },
+    include: [
+      {
+        model: Product,
+        required: false, // Apply OUTER JOIN
+        where: { status: 'active' },
+     
+      },
+    ],
+  });
+
+
+});
+
+const removeProductFromCart = catchAsync(async (req, res) => {
   const { id } = req.params;
 
   const removeproduct = await ProductInCart.findOne({
-   
     where: { productId: id, status: 'active' },
   });
 
-  await removeproduct.update({ status: 'removed' });
+  await removeproduct.update({ quantity: 0, status: 'removed' });
 
+  res.status(204).json({ status: 'success' });
 });
 
 module.exports = {
